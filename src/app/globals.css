@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Base Styles ─── */
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-background text-text-primary;
+    min-height: 100vh;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #0f0f0f;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #2a2a2a;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3a3a3a;
+  }
+
+  /* Focus Styles */
+  :focus-visible {
+    outline: 2px solid #e03d2f;
+    outline-offset: 2px;
+  }
+
+  /* Selection */
+  ::selection {
+    background: rgba(224, 61, 47, 0.3);
+    color: #f5f5f5;
+  }
+}
+
+/* ─── Component Utilities ─── */
+@layer components {
+  .glass-surface {
+    @apply bg-surface/80 backdrop-blur-md border border-surface-border;
+  }
+
+  .card-base {
+    @apply bg-surface border border-surface-border rounded-xl transition-all duration-300;
+  }
+
+  .card-base:hover {
+    @apply border-accent/30 bg-surface-hover;
+  }
+
+  .accent-gradient {
+    background: linear-gradient(135deg, #e03d2f, #ff6b5a);
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, #f5f5f5, #a0a0a0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .drop-zone {
+    @apply border-2 border-dashed border-surface-border rounded-2xl transition-all duration-300;
+  }
+
+  .drop-zone-active {
+    @apply border-accent bg-accent-glow;
+  }
+
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* Progress bar fill animation */
+  .progress-bar-fill {
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* ─── Utility Animations ─── */
+@layer utilities {
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+  .stagger-4 { animation-delay: 0.4s; }
+  .stagger-5 { animation-delay: 0.5s; }
+  .stagger-6 { animation-delay: 0.6s; }
+}

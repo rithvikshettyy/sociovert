@@ -1,0 +1,442 @@
+import { ConversionTool, CategoryInfo } from '@/types';
+
+// ─── Category Definitions ───
+export const CATEGORIES: CategoryInfo[] = [
+  {
+    slug: 'pdf',
+    name: 'PDF Tools',
+    description: 'Merge, split, compress, convert, OCR, and edit PDFs',
+    icon: 'pdf',
+    color: '#e03d2f',
+    toolCount: 9,
+  },
+  {
+    slug: 'image',
+    name: 'Image Tools',
+    description: 'Convert, compress, and resize images in any format',
+    icon: 'image',
+    color: '#3b82f6',
+    toolCount: 3,
+  },
+  {
+    slug: 'document',
+    name: 'Document Tools',
+    description: 'Convert between Office documents and PDF',
+    icon: 'document',
+    color: '#8b5cf6',
+    toolCount: 2,
+  },
+  {
+    slug: 'video',
+    name: 'Video Tools',
+    description: 'Convert, compress, and extract audio from videos',
+    icon: 'video',
+    color: '#f59e0b',
+    toolCount: 3,
+  },
+  {
+    slug: 'audio',
+    name: 'Audio Tools',
+    description: 'Convert between audio formats with quality control',
+    icon: 'audio',
+    color: '#10b981',
+    toolCount: 1,
+  },
+  {
+    slug: 'archive',
+    name: 'Archive Tools',
+    description: 'Create and extract ZIP, RAR, and 7Z archives',
+    icon: 'archive',
+    color: '#ec4899',
+    toolCount: 2,
+  },
+];
+
+// ─── All Tools ───
+export const TOOLS: ConversionTool[] = [
+  // ── PDF Tools ──
+  {
+    slug: 'merge',
+    name: 'Merge PDFs',
+    description: 'Combine multiple PDF files into a single document',
+    category: 'pdf',
+    inputFormats: ['pdf'],
+    outputFormats: ['pdf'],
+    icon: 'merge',
+    action: 'merge',
+    multiFile: true,
+  },
+  {
+    slug: 'split',
+    name: 'Split PDF',
+    description: 'Extract specific pages or split into individual pages',
+    category: 'pdf',
+    inputFormats: ['pdf'],
+    outputFormats: ['pdf'],
+    icon: 'split',
+    action: 'split',
+    options: [
+      {
+        name: 'pages',
+        label: 'Page Range',
+        type: 'text',
+        defaultValue: '1-5',
+      },
+    ],
+  },
+  {
+    slug: 'compress',
+    name: 'Compress PDF',
+    description: 'Reduce PDF file size while maintaining quality',
+    category: 'pdf',
+    inputFormats: ['pdf'],
+    outputFormats: ['pdf'],
+    icon: 'compress',
+    action: 'compress',
+    options: [
+      {
+        name: 'quality',
+        label: 'Quality',
+        type: 'select',
+        defaultValue: 'ebook',
+        choices: [
+          { label: 'Screen (72 DPI)', value: 'screen' },
+          { label: 'Ebook (150 DPI)', value: 'ebook' },
+          { label: 'Printer (300 DPI)', value: 'printer' },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'pdf-to-word',
+    name: 'PDF to Word',
+    description: 'Convert PDF documents to editable DOCX files',
+    category: 'pdf',
+    inputFormats: ['pdf'],
+    outputFormats: ['docx'],
+    icon: 'convert',
+    action: 'convert',
+  },
+  {
+    slug: 'pdf-to-image',
+    name: 'PDF to Image',
+    description: 'Convert PDF pages to high-quality images',
+    category: 'pdf',
+    inputFormats: ['pdf'],
+    outputFormats: ['jpg', 'png'],
+    icon: 'convert',
+    action: 'convert',
+  },
+  {
+    slug: 'image-to-pdf',
+    name: 'Image to PDF',
+    description: 'Convert images into a PDF document',
+    category: 'pdf',
+    inputFormats: ['jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp', 'tiff'],
+    outputFormats: ['pdf'],
+    icon: 'convert',
+    action: 'convert',
+    multiFile: true,
+  },
+  {
+    slug: 'ocr',
+    name: 'OCR PDF',
+    description: 'Extract text from scanned PDFs using optical character recognition',
+    category: 'pdf',
+    inputFormats: ['pdf', 'jpg', 'jpeg', 'png'],
+    outputFormats: ['pdf', 'txt'],
+    icon: 'ocr',
+    action: 'ocr',
+  },
+  {
+    slug: 'rotate',
+    name: 'Rotate PDF',
+    description: 'Rotate PDF pages by 90, 180, or 270 degrees',
+    category: 'pdf',
+    inputFormats: ['pdf'],
+    outputFormats: ['pdf'],
+    icon: 'rotate',
+    action: 'rotate',
+    options: [
+      {
+        name: 'degrees',
+        label: 'Rotation',
+        type: 'select',
+        defaultValue: '90',
+        choices: [
+          { label: '90° Clockwise', value: '90' },
+          { label: '180°', value: '180' },
+          { label: '90° Counter-clockwise', value: '270' },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'watermark',
+    name: 'Watermark PDF',
+    description: 'Add text watermarks to your PDF documents',
+    category: 'pdf',
+    inputFormats: ['pdf'],
+    outputFormats: ['pdf'],
+    icon: 'watermark',
+    action: 'watermark',
+    options: [
+      {
+        name: 'text',
+        label: 'Watermark Text',
+        type: 'text',
+        defaultValue: 'CONFIDENTIAL',
+      },
+    ],
+  },
+
+  // ── Image Tools ──
+  {
+    slug: 'convert',
+    name: 'Convert Image',
+    description: 'Convert between JPG, PNG, WebP, AVIF, SVG, and more',
+    category: 'image',
+    inputFormats: ['jpg', 'jpeg', 'png', 'webp', 'avif', 'svg', 'gif', 'tiff', 'bmp'],
+    outputFormats: ['jpg', 'png', 'webp', 'avif'],
+    icon: 'convert',
+    action: 'convert',
+  },
+  {
+    slug: 'compress',
+    name: 'Compress Image',
+    description: 'Reduce image file size with adjustable quality',
+    category: 'image',
+    inputFormats: ['jpg', 'jpeg', 'png', 'webp'],
+    outputFormats: ['jpg', 'png', 'webp'],
+    icon: 'compress',
+    action: 'compress',
+    options: [
+      {
+        name: 'quality',
+        label: 'Quality',
+        type: 'range',
+        defaultValue: 80,
+        min: 10,
+        max: 100,
+        step: 5,
+      },
+    ],
+  },
+  {
+    slug: 'resize',
+    name: 'Resize Image',
+    description: 'Resize images to exact dimensions or percentage',
+    category: 'image',
+    inputFormats: ['jpg', 'jpeg', 'png', 'webp', 'avif', 'gif', 'tiff', 'bmp'],
+    outputFormats: ['jpg', 'png', 'webp'],
+    icon: 'resize',
+    action: 'resize',
+    options: [
+      {
+        name: 'width',
+        label: 'Width (px)',
+        type: 'number',
+        defaultValue: 1920,
+        min: 1,
+        max: 10000,
+      },
+      {
+        name: 'height',
+        label: 'Height (px)',
+        type: 'number',
+        defaultValue: 1080,
+        min: 1,
+        max: 10000,
+      },
+    ],
+  },
+  {
+    slug: 'exif-purge',
+    name: 'Deep EXIF Purger',
+    description: 'Irreversibly strip all metadata, GPS coordinates, and camera info from images and documents',
+    category: 'image',
+    inputFormats: ['jpg', 'jpeg', 'png', 'webp', 'tiff', 'pdf', 'docx'],
+    outputFormats: ['jpg', 'png', 'webp', 'tiff', 'pdf', 'docx'],
+    icon: 'watermark',
+    action: 'convert',
+  },
+
+  // ── Document Tools ──
+  {
+    slug: 'to-pdf',
+    name: 'Document to PDF',
+    description: 'Convert Word, Excel, and PowerPoint files to PDF',
+    category: 'document',
+    inputFormats: ['docx', 'xlsx', 'pptx', 'doc', 'xls', 'ppt', 'odt', 'ods', 'odp'],
+    outputFormats: ['pdf'],
+    icon: 'convert',
+    action: 'convert',
+  },
+  {
+    slug: 'from-pdf',
+    name: 'PDF to Document',
+    description: 'Convert PDFs back to Word, Excel, or PowerPoint',
+    category: 'document',
+    inputFormats: ['pdf'],
+    outputFormats: ['docx', 'xlsx', 'pptx'],
+    icon: 'convert',
+    action: 'convert',
+  },
+  {
+    slug: 'to-latex',
+    name: 'To LaTeX Converter',
+    description: 'Convert Word documents and PDF files into structured LaTeX code',
+    category: 'document',
+    inputFormats: ['docx', 'pdf'],
+    outputFormats: ['tex'],
+    icon: 'document',
+    action: 'convert',
+  },
+  {
+    slug: 'ocr-to-md',
+    name: 'OCR to Markdown',
+    description: 'Extract text from scanned documents and images into structured Markdown',
+    category: 'document',
+    inputFormats: ['pdf', 'jpg', 'jpeg', 'png'],
+    outputFormats: ['md'],
+    icon: 'ocr',
+    action: 'ocr',
+  },
+
+  // ── Video Tools ──
+  {
+    slug: 'convert',
+    name: 'Convert Video',
+    description: 'Convert between MP4, MOV, AVI, MKV, WebM, and GIF',
+    category: 'video',
+    inputFormats: ['mp4', 'mov', 'avi', 'mkv', 'webm'],
+    outputFormats: ['mp4', 'mov', 'avi', 'mkv', 'webm', 'gif'],
+    icon: 'convert',
+    action: 'convert',
+  },
+  {
+    slug: 'compress',
+    name: 'Compress Video',
+    description: 'Reduce video file size with quality control',
+    category: 'video',
+    inputFormats: ['mp4', 'mov', 'avi', 'mkv', 'webm'],
+    outputFormats: ['mp4'],
+    icon: 'compress',
+    action: 'compress',
+    options: [
+      {
+        name: 'quality',
+        label: 'Quality (CRF)',
+        type: 'range',
+        defaultValue: 28,
+        min: 18,
+        max: 51,
+        step: 1,
+      },
+    ],
+  },
+  {
+    slug: 'extract-audio',
+    name: 'Extract Audio',
+    description: 'Extract the audio track from any video file',
+    category: 'video',
+    inputFormats: ['mp4', 'mov', 'avi', 'mkv', 'webm'],
+    outputFormats: ['mp3', 'wav', 'flac', 'aac', 'ogg'],
+    icon: 'extract',
+    action: 'extract',
+  },
+  {
+    slug: 'social-download',
+    name: 'Social Downloader',
+    description: 'Download video/audio from YouTube, Reels, TikTok, and Shorts',
+    category: 'video',
+    inputFormats: ['url'],
+    outputFormats: ['mp4', 'mp3'],
+    icon: 'extract',
+    action: 'download',
+    options: [
+      {
+        name: 'format',
+        label: 'Format',
+        type: 'select',
+        defaultValue: 'mp4',
+        choices: [
+          { label: 'Video (MP4)', value: 'mp4' },
+          { label: 'Audio (MP3)', value: 'mp3' },
+        ],
+      },
+    ],
+  },
+
+  // ── Audio Tools ──
+  {
+    slug: 'convert',
+    name: 'Convert Audio',
+    description: 'Convert between MP3, WAV, FLAC, AAC, OGG, and more',
+    category: 'audio',
+    inputFormats: ['mp3', 'wav', 'flac', 'aac', 'ogg', 'm4a', 'wma'],
+    outputFormats: ['mp3', 'wav', 'flac', 'aac', 'ogg'],
+    icon: 'convert',
+    action: 'convert',
+  },
+
+  // ── Archive Tools ──
+  {
+    slug: 'create',
+    name: 'Create Archive',
+    description: 'Compress files into ZIP, TAR, or 7Z archives',
+    category: 'archive',
+    inputFormats: ['*'],
+    outputFormats: ['zip', 'tar', 'tar.gz'],
+    icon: 'archive',
+    action: 'merge',
+    multiFile: true,
+  },
+  {
+    slug: 'extract',
+    name: 'Extract Archive',
+    description: 'Extract files from ZIP, RAR, 7Z, and TAR archives',
+    category: 'archive',
+    inputFormats: ['zip', 'rar', '7z', 'tar', 'gz', 'tar.gz'],
+    outputFormats: ['zip'],
+    icon: 'extract',
+    action: 'extract',
+  },
+];
+
+// ─── Helpers ───
+export function getToolsByCategory(category: string): ConversionTool[] {
+  return TOOLS.filter((t) => t.category === category);
+}
+
+export function getTool(category: string, slug: string): ConversionTool | undefined {
+  return TOOLS.find((t) => t.category === category && t.slug === slug);
+}
+
+export function getCategoryInfo(slug: string): CategoryInfo | undefined {
+  return CATEGORIES.find((c) => c.slug === slug);
+}
+
+// ─── Category Icons (SVG paths) ───
+export const CATEGORY_ICONS: Record<string, string> = {
+  pdf: 'M7 21h10a2 2 0 002-2V9l-5-5H7a2 2 0 00-2 2v13a2 2 0 002 2zm3-9h4m-4 3h4m1-8.5V9h3.5',
+  image: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z',
+  document: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
+  video: 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z',
+  audio: 'M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z',
+  archive: 'M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4',
+};
+
+// ─── Tool Action Icons ───
+export const ACTION_ICONS: Record<string, string> = {
+  convert: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15',
+  merge: 'M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z',
+  split: 'M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2',
+  compress: 'M19 14l-7 7m0 0l-7-7m7 7V3',
+  extract: 'M5 19l7-7m0 0l7 7m-7-7v18',
+  ocr: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01',
+  rotate: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15',
+  watermark: 'M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z',
+  resize: 'M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4',
+  archive: 'M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4',
+};
