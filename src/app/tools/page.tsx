@@ -1,12 +1,55 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import ToolCard from '@/components/conversion/ToolCard';
-import { TOOLS, CATEGORIES } from '@/lib/tools-registry';
+import { TOOLS, CATEGORIES, getCategoryInfo } from '@/lib/tools-registry';
 
 interface ToolsPageProps {
   searchParams: {
     category?: string;
   };
 }
+
+export async function generateMetadata({ searchParams }: ToolsPageProps): Promise<Metadata> {
+  const activeCategory = searchParams.category;
+  const categoryInfo = activeCategory ? getCategoryInfo(activeCategory) : null;
+
+  const title = categoryInfo
+    ? `${categoryInfo.name} Online - Free & Secure Tools | SocioVert`
+    : 'All File Conversion Tools - PDF, Video, Image, Audio | SocioVert';
+
+  const description = categoryInfo
+    ? `${categoryInfo.description}. Access professional, self-hosted, secure, and fast tools for ${categoryInfo.name.toLowerCase()} with zero logs.`
+    : `Access ${TOOLS.length} free, secure, and self-hosted file conversion tools. Compress, convert, merge, split, and edit files with complete privacy.`;
+
+  const canonicalUrl = activeCategory 
+    ? `https://sociovert.com/tools?category=${activeCategory}`
+    : 'https://sociovert.com/tools';
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      url: canonicalUrl,
+      siteName: 'SocioVert',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
+
 
 /**
  * Optimized Tools Page.

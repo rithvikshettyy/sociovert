@@ -11,8 +11,21 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
+import type { Viewport } from 'next';
+
+export const viewport: Viewport = {
+  themeColor: '#0f172a',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export const metadata: Metadata = {
-  title: 'SocioVert — Free Self-Hosted File Converter',
+  metadataBase: new URL('https://sociovert.com'),
+  title: {
+    default: 'SocioVert — Free Self-Hosted File Converter',
+    template: '%s | SocioVert',
+  },
   description:
     'Convert files for free. PDF, images, video, audio, documents, and archives. Self-hosted, no tracking, no limits. Your files never leave your server.',
   keywords: [
@@ -20,16 +33,57 @@ export const metadata: Metadata = {
     'pdf converter',
     'image converter',
     'video converter',
+    'audio converter',
+    'document converter',
+    'archive creator',
+    'online ocr',
+    'exif purger',
+    'social video downloader',
+    'latex converter',
     'self-hosted',
-    'free',
-    'open source',
+    'free converter',
+    'privacy first file tool',
   ],
+  authors: [{ name: 'SocioVert' }],
+  creator: 'SocioVert',
+  publisher: 'SocioVert',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
-    title: 'SocioVert — Free Self-Hosted File Converter',
-    description: 'Convert any file, free forever. Self-hosted with zero tracking.',
+    title: 'SocioVert - Free Self-Hosted File Converter',
+    description:
+      'Convert files for free. PDF, images, video, audio, documents, and archives. Self-hosted, no tracking, no limits. Your files never leave your server.',
+    url: 'https://sociovert.com',
+    siteName: 'SocioVert',
+    locale: 'en_US',
     type: 'website',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'SocioVert - Free Self-Hosted File Converter',
+    description:
+      'Convert files for free. PDF, images, video, audio, documents, and archives. Self-hosted, no tracking, no limits. Your files never leave your server.',
+    creator: '@sociovert',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
+
 
 export default function RootLayout({
   children,
