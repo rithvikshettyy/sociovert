@@ -3,16 +3,81 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ConversionTool } from '@/types';
-import { ACTION_ICONS } from '@/lib/tools-registry';
 import Badge from '@/components/ui/Badge';
+import {
+  GitMerge,
+  Scissors,
+  Archive,
+  FileText,
+  FileImage,
+  FileUp,
+  ScanText,
+  RotateCw,
+  Stamp,
+  ImageIcon,
+  ImageDown,
+  Scaling,
+  EyeOff,
+  Eraser,
+  Palette,
+  QrCode,
+  FileSymlink,
+  FileOutput,
+  Binary,
+  FileCode,
+  Hash,
+  Video,
+  VideoOff,
+  AudioLines,
+  DownloadCloud,
+  Music,
+  FolderArchive,
+  FolderOpen,
+  Globe,
+  Link as LinkIcon,
+  HelpCircle
+} from 'lucide-react';
 
 interface ToolCardProps {
   tool: ConversionTool;
   index?: number;
 }
 
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  'pdf/merge': GitMerge,
+  'pdf/split': Scissors,
+  'pdf/compress': Archive,
+  'pdf/pdf-to-word': FileText,
+  'pdf/pdf-to-image': FileImage,
+  'pdf/image-to-pdf': FileUp,
+  'pdf/ocr': ScanText,
+  'pdf/rotate': RotateCw,
+  'pdf/watermark': Stamp,
+  'image/convert': ImageIcon,
+  'image/compress': ImageDown,
+  'image/resize': Scaling,
+  'image/exif-purge': EyeOff,
+  'image/bg-removal': Eraser,
+  'image/color-palette': Palette,
+  'image/qr-generator': QrCode,
+  'document/to-pdf': FileSymlink,
+  'document/from-pdf': FileOutput,
+  'document/to-latex': Binary,
+  'document/ocr-to-md': FileCode,
+  'document/word-counter': Hash,
+  'video/convert': Video,
+  'video/compress': VideoOff,
+  'video/extract-audio': AudioLines,
+  'video/social-download': DownloadCloud,
+  'audio/convert': Music,
+  'archive/create': FolderArchive,
+  'archive/extract': FolderOpen,
+  'utility/seo-generator': Globe,
+  'utility/link-shortener': LinkIcon,
+};
+
 export default function ToolCard({ tool, index = 0 }: ToolCardProps) {
-  const iconPath = ACTION_ICONS[tool.icon] || ACTION_ICONS.convert;
+  const ToolIcon = ICON_MAP[`${tool.category}/${tool.slug}`] || HelpCircle;
 
   return (
     <motion.div
@@ -28,19 +93,7 @@ export default function ToolCard({ tool, index = 0 }: ToolCardProps) {
         >
           {/* Icon */}
           <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center mb-3 group-hover:bg-accent/20 transition-colors">
-            <svg
-              className="w-5 h-5 text-accent"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.5}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d={iconPath}
-              />
-            </svg>
+            <ToolIcon className="w-5 h-5 text-accent" />
           </div>
 
           {/* Content */}
