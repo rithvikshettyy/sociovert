@@ -35,7 +35,10 @@ import {
   FolderOpen,
   Globe,
   Link as LinkIcon,
-  HelpCircle
+  HelpCircle,
+  FileSpreadsheet,
+  Presentation,
+  Lock
 } from 'lucide-react';
 
 interface ToolCardProps {
@@ -53,6 +56,9 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   'pdf/ocr': ScanText,
   'pdf/rotate': RotateCw,
   'pdf/watermark': Stamp,
+  'pdf/pdf-to-excel': FileSpreadsheet,
+  'pdf/ppt-to-pdf': Presentation,
+  'pdf/protect': Lock,
   'image/convert': ImageIcon,
   'image/compress': ImageDown,
   'image/resize': Scaling,

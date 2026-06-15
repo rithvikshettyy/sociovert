@@ -51,6 +51,21 @@ export const SEO_METADATA_REGISTRY: Record<string, ToolSeoInfo> = {
     description: 'Add text watermarks to your PDF pages online. Customize position, color, and text securely. No registration required.',
     keywords: ['watermark pdf', 'add watermark to pdf', 'pdf watermark tool', 'protect pdf online', 'free pdf watermarker'],
   },
+  'pdf/pdf-to-excel': {
+    title: 'PDF to Excel Converter Free Online — SocioVert',
+    description: 'Convert PDF documents to editable Excel XLSX spreadsheets online. Fast, secure, no watermarks, and no signup.',
+    keywords: ['pdf to excel', 'pdf to xlsx', 'convert pdf to excel', 'free pdf to excel converter', 'pdf to spreadsheet'],
+  },
+  'pdf/ppt-to-pdf': {
+    title: 'PowerPoint PPT to PDF Converter Free Online — SocioVert',
+    description: 'Convert PPT, PPTX, and ODP presentations to high-quality PDF files online. Secure, fast, self-hosted converter.',
+    keywords: ['ppt to pdf', 'pptx to pdf', 'convert powerpoint to pdf', 'free ppt to pdf converter', 'convert presentation to pdf'],
+  },
+  'pdf/protect': {
+    title: 'Protect PDF Online - Encrypt PDF with Password | SocioVert',
+    description: 'Encrypt and password-protect your PDF files online. Secure your sensitive documents using standard PDF encryption. Free and self-hosted.',
+    keywords: ['protect pdf', 'encrypt pdf', 'password protect pdf', 'pdf lock', 'secure pdf file online'],
+  },
 
   // ── Image Tools ──
   'image/convert': {

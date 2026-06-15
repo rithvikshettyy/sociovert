@@ -998,6 +998,24 @@ export default function ToolClientPage() {
                                         />
                                       </div>
                                     )}
+                                    {opt.type === 'password' && (
+                                      <div>
+                                        <label className="text-xs font-medium text-text-secondary uppercase tracking-wider block mb-1.5">
+                                          {opt.label}
+                                        </label>
+                                        <input
+                                          type="password"
+                                          value={options[opt.name] || String(opt.defaultValue)}
+                                          onChange={(e) =>
+                                            setOptions((prev) => ({
+                                              ...prev,
+                                              [opt.name]: e.target.value,
+                                            }))
+                                          }
+                                          className="w-full bg-background border border-surface-border rounded-lg px-4 py-2.5 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+                                        />
+                                      </div>
+                                    )}
                                     {opt.type === 'text' && (
                                       <div>
                                         <label className="text-xs font-medium text-text-secondary uppercase tracking-wider block mb-1.5">

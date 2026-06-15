@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@pdfsmaller/pdf-encrypt": "^1.0.2",
     "@types/qrcode": "^1.5.6",
     "archiver": "^7.0.1",
     "bull": "^4.16.5",

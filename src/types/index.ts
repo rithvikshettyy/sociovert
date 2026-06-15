@@ -17,7 +17,10 @@ export type ConversionAction =
   | 'extract-palette'
   | 'word-count'
   | 'seo-generate'
-  | 'shorten-link';
+  | 'shorten-link'
+  | 'pdf-to-excel'
+  | 'ppt-to-pdf'
+  | 'protect';
 
 export type ConversionStatus = 'idle' | 'uploading' | 'processing' | 'completed' | 'error';
 
@@ -38,7 +41,7 @@ export interface ConversionTool {
 export interface ToolOption {
   name: string;
   label: string;
-  type: 'number' | 'text' | 'select' | 'range';
+  type: 'number' | 'text' | 'select' | 'range' | 'password';
   defaultValue: string | number;
   min?: number;
   max?: number;

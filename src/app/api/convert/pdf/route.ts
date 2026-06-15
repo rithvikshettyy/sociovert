@@ -44,6 +44,7 @@ export async function POST(req: NextRequest) {
         quality: formData.get('quality') as string,
         degrees: formData.get('degrees') as string,
         text: formData.get('text') as string,
+        password: formData.get('password') as string,
       },
     });
 

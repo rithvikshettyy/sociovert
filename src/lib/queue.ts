@@ -101,6 +101,9 @@ conversionQueue.process(3, async (job) => {
         watermarkPdf,
         ocrPdf,
         pdfToWord,
+        pdfToExcel,
+        pptToPdf,
+        protectPdf,
       } = await import('./converters/pdf');
 
       if (action === 'merge') {
@@ -115,6 +118,12 @@ conversionQueue.process(3, async (job) => {
         result = await imageToPdf(filePaths);
       } else if (action === 'pdf-to-word') {
         result = await pdfToWord(filePath);
+      } else if (action === 'pdf-to-excel') {
+        result = await pdfToExcel(filePath);
+      } else if (action === 'ppt-to-pdf') {
+        result = await pptToPdf(filePath);
+      } else if (action === 'protect') {
+        result = await protectPdf(filePath, options.password);
       } else if (action === 'rotate') {
         const degrees = parseInt(options.degrees || '90', 10);
         result = await rotatePdf(filePath, degrees);

@@ -1,5 +1,5 @@
 import { PDFDocument, degrees, rgb, StandardFonts } from 'pdf-lib';
-import { readFile } from 'fs/promises';
+import { readFile, rename } from 'fs/promises';
 import { execSync } from 'child_process';
 import { saveTempBuffer, generateFileId, getTempPath, ensureTempDir } from '../file-utils';
 
@@ -237,14 +237,109 @@ export async function pdfToWord(
     }
   }
 
+  const inputBasename = inputPath.split(/[/\\]/).pop()?.split('.').shift() || '';
+
   execSync(
     `${cmd} --headless --convert-to docx --outdir "${getTempPath(fileId, '').replace(/[^/\\]+$/, '')}" "${inputPath}"`,
     { timeout: 120000 }
   );
 
-  // LibreOffice outputs with original filename, we need to rename
-  const outputPath = getTempPath(fileId, 'docx');
-  return { filePath: outputPath, fileId };
+  const expectedLibreOutputPath = getTempPath(inputBasename, 'docx');
+  const finalOutputPath = getTempPath(fileId, 'docx');
+  
+  await rename(expectedLibreOutputPath, finalOutputPath);
+
+  return { filePath: finalOutputPath, fileId };
+}
+
+/**
+ * Convert PDF to Excel using LibreOffice Calc
+ */
+export async function pdfToExcel(
+  inputPath: string
+): Promise<{ filePath: string; fileId: string }> {
+  await ensureTempDir();
+  const fileId = generateFileId();
+
+  let cmd = 'libreoffice';
+  if (process.platform === 'win32') {
+    try {
+      execSync('where.exe soffice', { stdio: 'ignore' });
+      cmd = 'soffice';
+    } catch {
+      cmd = '"C:\\Program Files\\LibreOffice\\program\\soffice.exe"';
+    }
+  }
+
+  const inputBasename = inputPath.split(/[/\\]/).pop()?.split('.').shift() || '';
+
+  execSync(
+    `${cmd} --headless --convert-to xlsx --outdir "${getTempPath(fileId, '').replace(/[^/\\]+$/, '')}" "${inputPath}"`,
+    { timeout: 120000 }
+  );
+
+  const expectedLibreOutputPath = getTempPath(inputBasename, 'xlsx');
+  const finalOutputPath = getTempPath(fileId, 'xlsx');
+  
+  await rename(expectedLibreOutputPath, finalOutputPath);
+
+  return { filePath: finalOutputPath, fileId };
+}
+
+/**
+ * Convert PowerPoint presentations to PDF using LibreOffice
+ */
+export async function pptToPdf(
+  inputPath: string
+): Promise<{ filePath: string; fileId: string }> {
+  await ensureTempDir();
+  const fileId = generateFileId();
+
+  let cmd = 'libreoffice';
+  if (process.platform === 'win32') {
+    try {
+      execSync('where.exe soffice', { stdio: 'ignore' });
+      cmd = 'soffice';
+    } catch {
+      cmd = '"C:\\Program Files\\LibreOffice\\program\\soffice.exe"';
+    }
+  }
+
+  const inputBasename = inputPath.split(/[/\\]/).pop()?.split('.').shift() || '';
+
+  execSync(
+    `${cmd} --headless --convert-to pdf --outdir "${getTempPath(fileId, '').replace(/[^/\\]+$/, '')}" "${inputPath}"`,
+    { timeout: 120000 }
+  );
+
+  const expectedLibreOutputPath = getTempPath(inputBasename, 'pdf');
+  const finalOutputPath = getTempPath(fileId, 'pdf');
+
+  await rename(expectedLibreOutputPath, finalOutputPath);
+
+  return { filePath: finalOutputPath, fileId };
+}
+
+/**
+ * Encrypt and password-protect a PDF file
+ */
+export async function protectPdf(
+  inputPath: string,
+  password?: string
+): Promise<{ filePath: string; fileId: string }> {
+  if (!password) {
+    const fileId = generateFileId();
+    const finalOutputPath = getTempPath(fileId, 'pdf');
+    const { copyFile } = await import('fs/promises');
+    await copyFile(inputPath, finalOutputPath);
+    return { filePath: finalOutputPath, fileId };
+  }
+
+  const { encryptPDF } = await import('@pdfsmaller/pdf-encrypt');
+  const pdfBytes = await readFile(inputPath);
+  const encrypted = await encryptPDF(new Uint8Array(pdfBytes), password);
+  
+  return saveTempBuffer(Buffer.from(encrypted), 'pdf');
 }
 
 // ─── Helper ───
