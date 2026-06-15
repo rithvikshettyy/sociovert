@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { saveUploadedFile } from '@/lib/file-utils';
-import { convertAudio } from '@/lib/converters/audio';
-import { stat } from 'fs/promises';
 import { MAX_FILE_SIZE } from '@/lib/constants';
+import { conversionQueue } from '@/lib/queue';
 
 export async function POST(req: NextRequest) {
   try {
@@ -26,24 +25,28 @@ export async function POST(req: NextRequest) {
     }
 
     const { filePath: inputPath } = await saveUploadedFile(file);
-    const result = await convertAudio(inputPath, outputFormat, bitrate);
-    const outputStat = await stat(result.filePath);
+
+    // Add job to the queue
+    const job = await conversionQueue.add({
+      category: 'audio',
+      action: 'convert',
+      filePath: inputPath,
+      outputFormat,
+      options: {
+        bitrate,
+      },
+    });
 
     return NextResponse.json({
       success: true,
       data: {
-        id: result.fileId,
-        fileName: `converted.${outputFormat}`,
-        fileSize: outputStat.size,
-        outputFormat,
-        downloadUrl: `/api/download/${result.fileId}`,
-        expiresAt: Date.now() + 30 * 60 * 1000,
+        jobId: job.id,
       },
     });
   } catch (error) {
-    console.error('Audio conversion error:', error);
+    console.error('Audio queue enqueue error:', error);
     return NextResponse.json(
-      { success: false, error: error instanceof Error ? error.message : 'Conversion failed' },
+      { success: false, error: error instanceof Error ? error.message : 'Processing failed' },
       { status: 500 }
     );
   }

@@ -41,47 +41,85 @@ export function useConversion(category: ConversionCategory): UseConversionReturn
           formData.append(key, value);
         });
 
-        setProgress(30);
-        setStatus('processing');
+        setProgress(20);
 
+        // Upload and get Job ID immediately
         const response = await fetch(`/api/convert/${category}`, {
           method: 'POST',
           body: formData,
         });
 
-        setProgress(80);
+        const uploadData = await response.json();
 
-        const data = await response.json();
-
-        if (!data.success) {
-          throw new Error(data.error || 'Conversion failed');
+        if (!uploadData.success) {
+          throw new Error(uploadData.error || 'Upload failed');
         }
 
-        setProgress(100);
-        setStatus('completed');
-        setResult(data.data);
+        const jobId = uploadData.data.jobId;
+        if (!jobId) {
+          throw new Error('No Job ID returned from server');
+        }
+
+        setStatus('processing');
+        setProgress(30);
+
+        // Poll job status until complete or failed
+        let isFinished = false;
+        let jobResult: ConversionResult | null = null;
+
+        while (!isFinished) {
+          // Poll every 1.5 seconds
+          await new Promise((resolve) => setTimeout(resolve, 1500));
+
+          const jobResponse = await fetch(`/api/job/${jobId}`);
+          const jobData = await jobResponse.json();
+
+          if (!jobData.success) {
+            throw new Error(jobData.error || 'Failed to fetch job status');
+          }
+
+          const { status: jobStatus, progress: jobProgress, result: returnedResult, error: jobError } = jobData.data;
+
+          if (jobStatus === 'completed') {
+            isFinished = true;
+            jobResult = returnedResult;
+            setProgress(100);
+            setStatus('completed');
+            setResult(returnedResult);
+          } else if (jobStatus === 'failed') {
+            isFinished = true;
+            throw new Error(jobError || 'Job execution failed in worker');
+          } else if (jobStatus === 'active') {
+            // Map 30-95% range for visual smoothness
+            const scaledProgress = 30 + Math.floor((jobProgress || 0) * 0.65);
+            setProgress(Math.min(scaledProgress, 95));
+          } else if (jobStatus === 'waiting') {
+            setProgress(25);
+          }
+        }
 
         // Save to history in localStorage
-        try {
-          const history = JSON.parse(localStorage.getItem('convertx-history') || '[]');
-          history.unshift({
-            id: data.data.id,
-            toolSlug: options.action || 'convert',
-            toolName: options.toolName || `${category.toUpperCase()} Tool`,
-            inputFile: files[0]?.name || options.url || 'URL Download',
-            outputFile: data.data.fileName,
-            inputSize: files[0]?.size || 0,
-            outputSize: data.data.fileSize,
-            status: 'completed',
-            timestamp: Date.now(),
-          });
-          // Keep last 50 entries
-          localStorage.setItem(
-            'convertx-history',
-            JSON.stringify(history.slice(0, 50))
-          );
-        } catch {
-          // localStorage might be unavailable
+        if (jobResult) {
+          try {
+            const history = JSON.parse(localStorage.getItem('convertx-history') || '[]');
+            history.unshift({
+              id: jobResult.id || jobId,
+              toolSlug: options.action || 'convert',
+              toolName: options.toolName || `${category.toUpperCase()} Tool`,
+              inputFile: files[0]?.name || options.url || 'URL Download',
+              outputFile: jobResult.fileName || 'converted',
+              inputSize: files[0]?.size || 0,
+              outputSize: jobResult.fileSize || 0,
+              status: 'completed',
+              timestamp: Date.now(),
+            });
+            localStorage.setItem(
+              'convertx-history',
+              JSON.stringify(history.slice(0, 50))
+            );
+          } catch {
+            // localStorage might be unavailable
+          }
         }
       } catch (err) {
         setStatus('error');

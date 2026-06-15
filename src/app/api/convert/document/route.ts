@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { saveUploadedFile } from '@/lib/file-utils';
-import { convertDocument } from '@/lib/converters/document';
-import { convertToLatex } from '@/lib/converters/latex';
-import { convertOcrToMarkdown } from '@/lib/converters/ocr';
-import { countWords } from '@/lib/converters/utility';
-import { stat } from 'fs/promises';
 import { MAX_FILE_SIZE } from '@/lib/constants';
+import { conversionQueue } from '@/lib/queue';
 
 export async function POST(req: NextRequest) {
   try {
@@ -29,40 +25,27 @@ export async function POST(req: NextRequest) {
     }
 
     const { filePath: inputPath } = await saveUploadedFile(file);
-    
-    let result: { filePath: string; fileId: string };
+    const ext = file.name.split('.').pop()?.toLowerCase() || 'txt';
 
-    if (action === 'to-latex') {
-      result = await convertToLatex(inputPath);
-    } else if (action === 'ocr-to-md') {
-      result = await convertOcrToMarkdown(inputPath);
-    } else if (action === 'word-count') {
-      const ext = file.name.split('.').pop()?.toLowerCase() || 'txt';
-      const stats = await countWords(inputPath, ext);
-      return NextResponse.json({
-        success: true,
-        data: stats,
-      });
-    } else {
-      result = await convertDocument(inputPath, outputFormat);
-    }
-
-    const outputStat = await stat(result.filePath);
-    const finalFormat = result.filePath.split('.').pop() || outputFormat;
+    // Add job to the queue
+    const job = await conversionQueue.add({
+      category: 'document',
+      action,
+      filePath: inputPath,
+      outputFormat,
+      options: {
+        ext,
+      },
+    });
 
     return NextResponse.json({
       success: true,
       data: {
-        id: result.fileId,
-        fileName: `converted.${finalFormat}`,
-        fileSize: outputStat.size,
-        outputFormat: finalFormat,
-        downloadUrl: `/api/download/${result.fileId}`,
-        expiresAt: Date.now() + 30 * 60 * 1000,
+        jobId: job.id,
       },
     });
   } catch (error) {
-    console.error('Document conversion/processing error:', error);
+    console.error('Document queue enqueue error:', error);
     return NextResponse.json(
       { success: false, error: error instanceof Error ? error.message : 'Processing failed' },
       { status: 500 }
