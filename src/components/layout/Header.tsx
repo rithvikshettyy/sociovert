@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { href: '/', label: 'Home' },
   { href: '/tools', label: 'Tools' },
   { href: '/dashboard', label: 'Dashboard' },
+  { href: '/docs', label: 'Docs' },
 ];
 
 export default function Header() {
