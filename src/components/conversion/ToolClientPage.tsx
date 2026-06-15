@@ -702,14 +702,35 @@ export default function ToolClientPage() {
                         disabled={status === 'uploading' || status === 'processing'}
                       />
                       {files.length > 0 && (
-                        <div className="flex justify-center">
-                          <Button
-                            size="lg"
-                            onClick={handleConvert}
-                            loading={status === 'uploading' || status === 'processing'}
-                          >
-                            Analyze File
-                          </Button>
+                        <div className="space-y-4 mt-4 w-full">
+                          <div className="card-base p-4 text-left">
+                            <p className="text-xs text-text-muted uppercase tracking-wider mb-2">
+                              Selected file
+                            </p>
+                            {files.map((f, i) => (
+                              <div
+                                key={i}
+                                className="flex items-center gap-2 text-sm text-text-secondary py-1"
+                              >
+                                <svg className="w-4 h-4 text-accent flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span className="truncate">{f.name}</span>
+                                <span className="text-text-muted text-xs ml-auto">
+                                  {(f.size / 1024 / 1024).toFixed(1)} MB
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                          <div className="flex justify-center">
+                            <Button
+                              size="lg"
+                              onClick={handleConvert}
+                              loading={status === 'uploading' || status === 'processing'}
+                            >
+                              Analyze File
+                            </Button>
+                          </div>
                         </div>
                       )}
                     </>
@@ -783,14 +804,35 @@ export default function ToolClientPage() {
                     disabled={status === 'uploading' || status === 'processing'}
                   />
                   {files.length > 0 && (
-                    <div className="flex justify-center">
-                      <Button
-                        size="lg"
-                        onClick={handleConvert}
-                        loading={status === 'uploading' || status === 'processing'}
-                      >
-                        Extract Color Palette
-                      </Button>
+                    <div className="space-y-4 mt-4 w-full">
+                      <div className="card-base p-4 text-left">
+                        <p className="text-xs text-text-muted uppercase tracking-wider mb-2">
+                          Selected file
+                        </p>
+                        {files.map((f, i) => (
+                          <div
+                            key={i}
+                            className="flex items-center gap-2 text-sm text-text-secondary py-1"
+                          >
+                            <svg className="w-4 h-4 text-accent flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span className="truncate">{f.name}</span>
+                            <span className="text-text-muted text-xs ml-auto">
+                              {(f.size / 1024 / 1024).toFixed(1)} MB
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex justify-center">
+                        <Button
+                          size="lg"
+                          onClick={handleConvert}
+                          loading={status === 'uploading' || status === 'processing'}
+                        >
+                          Extract Color Palette
+                        </Button>
+                      </div>
                     </div>
                   )}
                 </>
