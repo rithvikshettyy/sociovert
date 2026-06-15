@@ -59,17 +59,12 @@ export async function middleware(request: NextRequest) {
     // 1. Check if the IP is currently banned
     const { banned } = await checkIPStatus(ip);
     if (banned) {
-      return new NextResponse(
-        JSON.stringify({
+      return NextResponse.json(
+        {
           success: false,
           error: 'Your IP has been temporarily banned for excessive requests'
-        }),
-        {
-          status: 403,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
+        },
+        { status: 403 }
       );
     }
 
@@ -92,17 +87,12 @@ export async function middleware(request: NextRequest) {
     await trackRequest(ip, !success);
 
     if (!success) {
-      return new NextResponse(
-        JSON.stringify({
+      return NextResponse.json(
+        {
           success: false,
           error: 'You have reached your hourly limit. Please try again later.'
-        }),
-        {
-          status: 429,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
+        },
+        { status: 429 }
       );
     }
   }

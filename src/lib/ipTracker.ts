@@ -66,6 +66,11 @@ export async function trackRequest(ip: string, isRateLimited: boolean): Promise<
       const trackerKey = `iptracker:${ip}`;
       const violationsKey = `violations:${ip}`;
 
+      // Get existing values or default them to ensure all fields exist on every request
+      const existing = await redis.hgetall(trackerKey) as Record<string, string> | null;
+      const conversionCount = existing?.conversionCount ? parseInt(existing.conversionCount, 10) : 0;
+      const banned = existing?.banned || 'false';
+
       if (isRateLimited) {
         // Increment consecutive violations
         const violations = await redis.incr(violationsKey);
@@ -73,6 +78,7 @@ export async function trackRequest(ip: string, isRateLimited: boolean): Promise<
         // If the user hits the rate limit 3 times in a row, auto-ban for 24 hours (86400 seconds)
         if (violations >= 3) {
           await redis.hset(trackerKey, {
+            conversionCount: String(conversionCount),
             lastSeen: nowStr,
             banned: 'true',
           });
@@ -80,18 +86,17 @@ export async function trackRequest(ip: string, isRateLimited: boolean): Promise<
           await redis.del(violationsKey); // Reset violations counter
         } else {
           await redis.hset(trackerKey, {
+            conversionCount: String(conversionCount),
             lastSeen: nowStr,
+            banned: banned,
           });
         }
       } else {
         // Successful conversion: reset violations counter and increment conversionCount
         await redis.del(violationsKey);
 
-        const currentCountStr = await redis.hget(trackerKey, 'conversionCount');
-        const currentCount = currentCountStr ? parseInt(currentCountStr as string, 10) : 0;
-
         await redis.hset(trackerKey, {
-          conversionCount: String(currentCount + 1),
+          conversionCount: String(conversionCount + 1),
           lastSeen: nowStr,
           banned: 'false',
         });
