@@ -24,7 +24,6 @@ import Link from 'next/link';
 import DropZone from '@/components/upload/DropZone';
 import FormatPicker from '@/components/upload/FormatPicker';
 import ProgressBar from '@/components/conversion/ProgressBar';
-import DownloadCard from '@/components/conversion/DownloadCard';
 import Button from '@/components/ui/Button';
 import Select from '@/components/ui/Select';
 import { useConversion } from '@/hooks/useConversion';
@@ -568,8 +567,18 @@ export default function ToolClientPage() {
           {/* ========================================================================= */}
           {tool.slug === 'qr-generator' && (
             <div className="space-y-6">
-              {status === 'completed' && result ? (
-                <DownloadCard result={result} onReset={handleReset} />
+              {status !== 'idle' ? (
+                <ProgressBar
+                  progress={progress}
+                  status={status}
+                  error={error}
+                  downloadUrl={result?.downloadUrl}
+                  fileName={result?.fileName}
+                  fileSize={result?.fileSize}
+                  outputFormat={result?.outputFormat}
+                  expiresAt={result?.expiresAt}
+                  onReset={handleReset}
+                />
               ) : (
                 <div className="card-base p-6 space-y-5">
                   <div>
@@ -580,7 +589,6 @@ export default function ToolClientPage() {
                       placeholder="Type your text or paste your URL link here..."
                       value={qrText}
                       onChange={(e) => setQrText(e.target.value)}
-                      disabled={status === 'uploading' || status === 'processing'}
                       rows={4}
                       className="w-full bg-background border border-surface-border rounded-xl px-4 py-3 text-base text-text-primary focus:outline-none focus:ring-2 focus:ring-accent placeholder:text-text-muted transition-all resize-none"
                     />
@@ -590,17 +598,12 @@ export default function ToolClientPage() {
                     <Button
                       size="lg"
                       onClick={handleConvert}
-                      loading={status === 'uploading' || status === 'processing'}
                       disabled={!qrText}
                     >
                       Generate QR Code
                     </Button>
                   </div>
                 </div>
-              )}
-              {/* Progress */}
-              {(status === 'uploading' || status === 'processing') && (
-                <ProgressBar progress={progress} status={status} />
               )}
             </div>
           )}
@@ -692,6 +695,13 @@ export default function ToolClientPage() {
                         <Button onClick={handleReset}>Analyze Another File</Button>
                       </div>
                     </div>
+                  ) : status !== 'idle' ? (
+                    <ProgressBar
+                      progress={progress}
+                      status={status}
+                      error={error}
+                      onReset={handleReset}
+                    />
                   ) : (
                     <>
                       <DropZone
@@ -699,7 +709,6 @@ export default function ToolClientPage() {
                         accept={acceptFormats}
                         multiple={false}
                         maxSize={MAX_FILE_SIZE.document}
-                        disabled={status === 'uploading' || status === 'processing'}
                       />
                       {files.length > 0 && (
                         <div className="space-y-4 mt-4 w-full">
@@ -726,7 +735,6 @@ export default function ToolClientPage() {
                             <Button
                               size="lg"
                               onClick={handleConvert}
-                              loading={status === 'uploading' || status === 'processing'}
                             >
                               Analyze File
                             </Button>
@@ -734,9 +742,6 @@ export default function ToolClientPage() {
                         </div>
                       )}
                     </>
-                  )}
-                  {(status === 'uploading' || status === 'processing') && (
-                    <ProgressBar progress={progress} status={status} />
                   )}
                 </div>
               )}
@@ -794,6 +799,13 @@ export default function ToolClientPage() {
                     <Button onClick={handleReset}>Extract Another Palette</Button>
                   </div>
                 </div>
+              ) : status !== 'idle' ? (
+                <ProgressBar
+                  progress={progress}
+                  status={status}
+                  error={error}
+                  onReset={handleReset}
+                />
               ) : (
                 <>
                   <DropZone
@@ -801,7 +813,6 @@ export default function ToolClientPage() {
                     accept={acceptFormats}
                     multiple={false}
                     maxSize={MAX_FILE_SIZE.image}
-                    disabled={status === 'uploading' || status === 'processing'}
                   />
                   {files.length > 0 && (
                     <div className="space-y-4 mt-4 w-full">
@@ -828,7 +839,6 @@ export default function ToolClientPage() {
                         <Button
                           size="lg"
                           onClick={handleConvert}
-                          loading={status === 'uploading' || status === 'processing'}
                         >
                           Extract Color Palette
                         </Button>
@@ -836,10 +846,6 @@ export default function ToolClientPage() {
                     </div>
                   )}
                 </>
-              )}
-
-              {(status === 'uploading' || status === 'processing') && (
-                <ProgressBar progress={progress} status={status} />
               )}
             </div>
           )}
@@ -853,8 +859,18 @@ export default function ToolClientPage() {
             tool.slug !== 'word-counter' &&
             tool.slug !== 'color-palette' && (
               <>
-                {status === 'completed' && result ? (
-                  <DownloadCard result={result} onReset={handleReset} />
+                {status !== 'idle' ? (
+                  <ProgressBar
+                    progress={progress}
+                    status={status}
+                    error={error}
+                    downloadUrl={result?.downloadUrl}
+                    fileName={result?.fileName}
+                    fileSize={result?.fileSize}
+                    outputFormat={result?.outputFormat}
+                    expiresAt={result?.expiresAt}
+                    onReset={handleReset}
+                  />
                 ) : (
                   <>
                     {tool.inputFormats.includes('url') ? (
@@ -868,7 +884,6 @@ export default function ToolClientPage() {
                             placeholder="Paste YouTube, Reels, TikTok, or Shorts link here..."
                             value={url}
                             onChange={(e) => setUrl(e.target.value)}
-                            disabled={status === 'uploading' || status === 'processing'}
                             className="w-full bg-background border border-surface-border rounded-xl px-4 py-3.5 text-base text-text-primary focus:outline-none focus:ring-2 focus:ring-accent placeholder:text-text-muted transition-all"
                           />
                         </div>
@@ -900,7 +915,6 @@ export default function ToolClientPage() {
                           <Button
                             size="lg"
                             onClick={handleConvert}
-                            loading={status === 'uploading' || status === 'processing'}
                             disabled={!url}
                           >
                             Download & Convert
@@ -914,7 +928,6 @@ export default function ToolClientPage() {
                           accept={acceptFormats}
                           multiple={tool.multiFile}
                           maxSize={MAX_FILE_SIZE[tool.category as ConversionCategory]}
-                          disabled={status === 'uploading' || status === 'processing'}
                         />
 
                         {files.length > 0 && (
@@ -1064,7 +1077,6 @@ export default function ToolClientPage() {
                               <Button
                                 size="lg"
                                 onClick={handleConvert}
-                                loading={status === 'uploading' || status === 'processing'}
                               >
                                 {tool.action === 'merge'
                                   ? `Merge ${files.length} files`
@@ -1080,25 +1092,7 @@ export default function ToolClientPage() {
                       </>
                     )}
 
-                    {/* Progress */}
-                    {(status === 'uploading' || status === 'processing') && (
-                      <ProgressBar progress={progress} status={status} />
-                    )}
                   </>
-                )}
-
-                {/* Error */}
-                {error && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="card-base border-red-900/50 p-4 text-center"
-                  >
-                    <p className="text-red-400 text-sm">{error}</p>
-                    <Button variant="ghost" size="sm" onClick={handleReset} className="mt-2">
-                      Try again
-                    </Button>
-                  </motion.div>
                 )}
               </>
             )}

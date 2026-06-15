@@ -68,8 +68,8 @@ export function useConversion(category: ConversionCategory): UseConversionReturn
         let jobResult: ConversionResult | null = null;
 
         while (!isFinished) {
-          // Poll every 1.5 seconds
-          await new Promise((resolve) => setTimeout(resolve, 1500));
+          // Poll every 2 seconds
+          await new Promise((resolve) => setTimeout(resolve, 2000));
 
           const jobResponse = await fetch(`/api/job/${jobId}`);
           const jobData = await jobResponse.json();
