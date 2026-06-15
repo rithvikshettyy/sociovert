@@ -1,5 +1,7 @@
 import Queue from 'bull';
 import Redis from 'ioredis';
+import cron from 'node-cron';
+import { cleanupExpiredFiles } from './file-utils';
 
 const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
 
@@ -34,6 +36,24 @@ export const conversionQueue =
 
 if (process.env.NODE_ENV !== 'production') {
   globalForQueue.conversionQueue = conversionQueue;
+}
+
+// Prevent duplicate cron registration in development hot-reloading
+const globalForCron = globalThis as unknown as {
+  cronScheduled?: boolean;
+};
+
+if (!globalForCron.cronScheduled) {
+  cron.schedule('*/30 * * * *', async () => {
+    console.log('Running automated temp file cleanup cron job...');
+    try {
+      const deleted = await cleanupExpiredFiles();
+      console.log(`Automated cleanup completed successfully. Deleted ${deleted} files/folders.`);
+    } catch (error) {
+      console.error('Automated cleanup cron job failed:', error);
+    }
+  });
+  globalForCron.cronScheduled = true;
 }
 
 // ─── Worker Process Handler (Concurrency = 3) ───

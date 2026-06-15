@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { findFileById } from '@/lib/file-utils';
-import { readFile } from 'fs/promises';
+import { findFileById, deleteFile } from '@/lib/file-utils';
+import { stat } from 'fs/promises';
+import { createReadStream } from 'fs';
+import { dirname } from 'path';
 import { MIME_MAP } from '@/lib/constants';
 
 export async function GET(
@@ -18,15 +20,42 @@ export async function GET(
       );
     }
 
-    const buffer = await readFile(file.filePath);
+    const fileStat = await stat(file.filePath);
     const mimeType = MIME_MAP[file.ext] || 'application/octet-stream';
     const fileName = `converted.${file.ext}`;
 
-    return new NextResponse(buffer, {
+    const fileStream = createReadStream(file.filePath);
+    const stream = new ReadableStream({
+      start(controller) {
+        fileStream.on('data', (chunk) => {
+          controller.enqueue(chunk);
+        });
+        fileStream.on('end', async () => {
+          controller.close();
+          try {
+            // Delete the parent UUID isolated directory and all contents immediately
+            const parentDir = dirname(file.filePath);
+            await deleteFile(parentDir);
+          } catch (e) {
+            console.error('Failed to delete downloaded file directory:', e);
+          }
+        });
+        fileStream.on('error', (err) => {
+          controller.error(err);
+        });
+      },
+      cancel() {
+        fileStream.destroy();
+        const parentDir = dirname(file.filePath);
+        deleteFile(parentDir).catch(() => {});
+      }
+    });
+
+    return new NextResponse(stream, {
       headers: {
         'Content-Type': mimeType,
         'Content-Disposition': `attachment; filename="${fileName}"`,
-        'Content-Length': buffer.length.toString(),
+        'Content-Length': fileStat.size.toString(),
         'Cache-Control': 'no-cache, no-store, must-revalidate',
       },
     });
