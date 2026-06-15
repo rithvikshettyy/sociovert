@@ -8,6 +8,7 @@ export const MAX_FILE_SIZE: Record<ConversionCategory, number> = {
   video: 2 * 1024 * 1024 * 1024, // 2GB
   audio: 500 * 1024 * 1024,      // 500MB
   archive: 1024 * 1024 * 1024,   // 1GB
+  utility: 50 * 1024 * 1024,     // 50MB
 };
 
 // ─── Temp Directory ───

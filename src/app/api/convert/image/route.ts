@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { saveUploadedFile } from '@/lib/file-utils';
 import { convertImage, compressImage, resizeImage } from '@/lib/converters/image';
 import { purgeExif } from '@/lib/converters/privacy';
+import { removeBackground } from '@/lib/converters/bg-removal';
+import { extractColorPalette } from '@/lib/converters/utility';
 import { stat } from 'fs/promises';
 import { MAX_FILE_SIZE } from '@/lib/constants';
 
@@ -47,6 +49,19 @@ export async function POST(req: NextRequest) {
       case 'exif-purge':
         result = await purgeExif(inputPath);
         break;
+
+      case 'bg-remove':
+        result = await removeBackground(inputPath);
+        break;
+
+      case 'extract-palette':
+        const palette = await extractColorPalette(inputPath);
+        return NextResponse.json({
+          success: true,
+          data: {
+            palette,
+          },
+        });
 
       case 'resize':
         if (!width && !height) {

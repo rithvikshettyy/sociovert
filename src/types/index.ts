@@ -1,5 +1,5 @@
 // ─── Conversion Categories ───
-export type ConversionCategory = 'image' | 'pdf' | 'document' | 'video' | 'audio' | 'archive';
+export type ConversionCategory = 'image' | 'pdf' | 'document' | 'video' | 'audio' | 'archive' | 'utility';
 
 export type ConversionAction =
   | 'convert'
@@ -11,7 +11,13 @@ export type ConversionAction =
   | 'rotate'
   | 'watermark'
   | 'resize'
-  | 'download';
+  | 'download'
+  | 'qr-generate'
+  | 'bg-remove'
+  | 'extract-palette'
+  | 'word-count'
+  | 'seo-generate'
+  | 'shorten-link';
 
 export type ConversionStatus = 'idle' | 'uploading' | 'processing' | 'completed' | 'error';
 

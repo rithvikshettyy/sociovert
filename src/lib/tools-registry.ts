@@ -16,7 +16,7 @@ export const CATEGORIES: CategoryInfo[] = [
     description: 'Convert, compress, and resize images in any format',
     icon: 'image',
     color: '#3b82f6',
-    toolCount: 3,
+    toolCount: 7,
   },
   {
     slug: 'document',
@@ -24,7 +24,7 @@ export const CATEGORIES: CategoryInfo[] = [
     description: 'Convert between Office documents and PDF',
     icon: 'document',
     color: '#8b5cf6',
-    toolCount: 2,
+    toolCount: 5,
   },
   {
     slug: 'video',
@@ -32,7 +32,7 @@ export const CATEGORIES: CategoryInfo[] = [
     description: 'Convert, compress, and extract audio from videos',
     icon: 'video',
     color: '#f59e0b',
-    toolCount: 3,
+    toolCount: 4,
   },
   {
     slug: 'audio',
@@ -48,6 +48,14 @@ export const CATEGORIES: CategoryInfo[] = [
     description: 'Create and extract ZIP, RAR, and 7Z archives',
     icon: 'archive',
     color: '#ec4899',
+    toolCount: 2,
+  },
+  {
+    slug: 'utility',
+    name: 'Utility Tools',
+    description: 'Web, productivity, and developer utilities',
+    icon: 'utility',
+    color: '#6366f1',
     toolCount: 2,
   },
 ];
@@ -260,6 +268,36 @@ export const TOOLS: ConversionTool[] = [
     icon: 'watermark',
     action: 'convert',
   },
+  {
+    slug: 'bg-removal',
+    name: 'Remove Background',
+    description: 'Remove backgrounds from images automatically using AI',
+    category: 'image',
+    inputFormats: ['jpg', 'jpeg', 'png', 'webp'],
+    outputFormats: ['png'],
+    icon: 'watermark',
+    action: 'bg-remove',
+  },
+  {
+    slug: 'color-palette',
+    name: 'Color Palette Extractor',
+    description: 'Extract dominant color palettes directly from any image',
+    category: 'image',
+    inputFormats: ['jpg', 'jpeg', 'png', 'webp'],
+    outputFormats: ['json'],
+    icon: 'watermark',
+    action: 'extract-palette',
+  },
+  {
+    slug: 'qr-generator',
+    name: 'QR Code Generator',
+    description: 'Generate high-quality QR codes for URLs, text, or Wi-Fi networks',
+    category: 'image',
+    inputFormats: ['text'],
+    outputFormats: ['png'],
+    icon: 'watermark',
+    action: 'qr-generate',
+  },
 
   // ── Document Tools ──
   {
@@ -301,6 +339,16 @@ export const TOOLS: ConversionTool[] = [
     outputFormats: ['md'],
     icon: 'ocr',
     action: 'ocr',
+  },
+  {
+    slug: 'word-counter',
+    name: 'Word Counter',
+    description: 'Count words, characters, lines, and paragraphs from text or files',
+    category: 'document',
+    inputFormats: ['text', 'txt', 'md', 'docx', 'pdf'],
+    outputFormats: ['json'],
+    icon: 'document',
+    action: 'word-count',
   },
 
   // ── Video Tools ──
@@ -402,6 +450,28 @@ export const TOOLS: ConversionTool[] = [
     icon: 'extract',
     action: 'extract',
   },
+
+  // ── Utility Tools ──
+  {
+    slug: 'seo-generator',
+    name: 'SEO Tag Generator',
+    description: 'Generate highly optimized Meta Tags and robots.txt files for your website',
+    category: 'utility',
+    inputFormats: ['text'],
+    outputFormats: ['txt'],
+    icon: 'document',
+    action: 'seo-generate',
+  },
+  {
+    slug: 'link-shortener',
+    name: 'Link Shortener',
+    description: 'Shorten links and track redirects using a lightweight self-hosted utility',
+    category: 'utility',
+    inputFormats: ['text'],
+    outputFormats: ['text'],
+    icon: 'convert',
+    action: 'shorten-link',
+  },
 ];
 
 // ─── Helpers ───
@@ -425,6 +495,7 @@ export const CATEGORY_ICONS: Record<string, string> = {
   video: 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z',
   audio: 'M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z',
   archive: 'M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4',
+  utility: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z',
 };
 
 // ─── Tool Action Icons ───

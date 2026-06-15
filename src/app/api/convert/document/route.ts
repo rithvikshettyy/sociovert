@@ -3,6 +3,7 @@ import { saveUploadedFile } from '@/lib/file-utils';
 import { convertDocument } from '@/lib/converters/document';
 import { convertToLatex } from '@/lib/converters/latex';
 import { convertOcrToMarkdown } from '@/lib/converters/ocr';
+import { countWords } from '@/lib/converters/utility';
 import { stat } from 'fs/promises';
 import { MAX_FILE_SIZE } from '@/lib/constants';
 
@@ -35,6 +36,13 @@ export async function POST(req: NextRequest) {
       result = await convertToLatex(inputPath);
     } else if (action === 'ocr-to-md') {
       result = await convertOcrToMarkdown(inputPath);
+    } else if (action === 'word-count') {
+      const ext = file.name.split('.').pop()?.toLowerCase() || 'txt';
+      const stats = await countWords(inputPath, ext);
+      return NextResponse.json({
+        success: true,
+        data: stats,
+      });
     } else {
       result = await convertDocument(inputPath, outputFormat);
     }
