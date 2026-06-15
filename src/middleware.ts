@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
+import { checkIPStatus, trackRequest } from '@/lib/ipTracker';
 
 // Determine if Upstash REST environment variables are configured
 const hasCredentials =
@@ -55,6 +56,24 @@ export async function middleware(request: NextRequest) {
     // Extract IP address from request headers/metadata
     const ip = request.ip || request.headers.get('x-forwarded-for') || '127.0.0.1';
     
+    // 1. Check if the IP is currently banned
+    const { banned } = await checkIPStatus(ip);
+    if (banned) {
+      return new NextResponse(
+        JSON.stringify({
+          success: false,
+          error: 'Your IP has been temporarily banned for excessive requests'
+        }),
+        {
+          status: 403,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+    }
+
+    // 2. Perform Rate Limiting check
     let success = true;
     
     if (ratelimit) {
@@ -69,6 +88,9 @@ export async function middleware(request: NextRequest) {
       success = checkInMemoryLimit(ip).success;
     }
     
+    // 3. Track request outcome (success or rate limited violation)
+    await trackRequest(ip, !success);
+
     if (!success) {
       return new NextResponse(
         JSON.stringify({
