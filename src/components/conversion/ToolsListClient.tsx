@@ -50,7 +50,7 @@ export default function ToolsListClient({ initialCategory }: ToolsListClientProp
   return (
     <div className="space-y-8">
       {/* Search & Category Filter Header Row */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-surface-border pb-6">
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 border-b border-surface-border pb-6">
         {/* Category Filter Tabs */}
         <div className="flex flex-wrap gap-2">
           <button
@@ -106,7 +106,7 @@ export default function ToolsListClient({ initialCategory }: ToolsListClientProp
             placeholder="Search tools..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-surface border border-surface-border text-text-primary placeholder:text-text-muted rounded-lg pl-10 pr-8 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-accent transition-all duration-200"
+            className="w-full bg-surface border border-surface-border text-text-primary placeholder:text-text-muted rounded-lg pl-10 pr-8 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-accent transition-all duration-200"
           />
           {searchQuery && (
             <button
