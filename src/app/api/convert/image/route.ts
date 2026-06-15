@@ -3,7 +3,7 @@ import { saveUploadedFile } from '@/lib/file-utils';
 import { convertImage, compressImage, resizeImage } from '@/lib/converters/image';
 import { purgeExif } from '@/lib/converters/privacy';
 import { removeBackground } from '@/lib/converters/bg-removal';
-import { extractColorPalette } from '@/lib/converters/utility';
+import { extractColorPalette, generateQrCode } from '@/lib/converters/utility';
 import { stat } from 'fs/promises';
 import { MAX_FILE_SIZE } from '@/lib/constants';
 
@@ -16,6 +16,31 @@ export async function POST(req: NextRequest) {
     const quality = parseInt((formData.get('quality') as string) || '90', 10);
     const width = parseInt((formData.get('width') as string) || '0', 10);
     const height = parseInt((formData.get('height') as string) || '0', 10);
+
+    if (action === 'qr-generate') {
+      const text = formData.get('text') as string;
+      if (!text) {
+        return NextResponse.json(
+          { success: false, error: 'No text provided for QR Code' },
+          { status: 400 }
+        );
+      }
+
+      const result = await generateQrCode(text);
+      const outputStat = await stat(result.filePath);
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          id: result.fileId,
+          fileName: `qrcode.png`,
+          fileSize: outputStat.size,
+          outputFormat: 'png',
+          downloadUrl: `/api/download/${result.fileId}`,
+          expiresAt: Date.now() + 30 * 60 * 1000,
+        },
+      });
+    }
 
     if (!file) {
       return NextResponse.json(
