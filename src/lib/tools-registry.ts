@@ -637,7 +637,7 @@ export const TOOLS: ConversionTool[] = [
 ];
 
 // Filter out binary-dependent tools on serverless (Vercel)
-const isServerless = process.env.VERCEL === '1' || process.env.NEXT_PUBLIC_SERVERLESS === '1';
+const isServerless = process.env.VERCEL === '1' || !!process.env.NEXT_PUBLIC_VERCEL_URL || process.env.NEXT_PUBLIC_SERVERLESS === '1';
 
 export const AVAILABLE_TOOLS: ConversionTool[] = isServerless
   ? TOOLS.filter((t) => !t.requiresBinary)
