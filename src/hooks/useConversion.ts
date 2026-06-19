@@ -55,47 +55,50 @@ export function useConversion(category: ConversionCategory): UseConversionReturn
           throw new Error(uploadData.error || 'Upload failed');
         }
 
-        const jobId = uploadData.data.jobId;
-        if (!jobId) {
-          throw new Error('No Job ID returned from server');
-        }
-
-        setStatus('processing');
-        setProgress(30);
-
-        // Poll job status until complete or failed
-        let isFinished = false;
+        // Direct result (serverless) or job-based (VPS)
         let jobResult: ConversionResult | null = null;
 
-        while (!isFinished) {
-          // Poll every 2 seconds
-          await new Promise((resolve) => setTimeout(resolve, 2000));
+        if (uploadData.data.jobId) {
+          // Queue mode: poll for result
+          const jobId = uploadData.data.jobId;
+          setStatus('processing');
+          setProgress(30);
 
-          const jobResponse = await fetch(`/api/job/${jobId}`);
-          const jobData = await jobResponse.json();
+          let isFinished = false;
+          while (!isFinished) {
+            await new Promise((resolve) => setTimeout(resolve, 2000));
 
-          if (!jobData.success) {
-            throw new Error(jobData.error || 'Failed to fetch job status');
+            const jobResponse = await fetch(`/api/job/${jobId}`);
+            const jobData = await jobResponse.json();
+
+            if (!jobData.success) {
+              throw new Error(jobData.error || 'Failed to fetch job status');
+            }
+
+            const { status: jobStatus, progress: jobProgress, result: returnedResult, error: jobError } = jobData.data;
+
+            if (jobStatus === 'completed') {
+              isFinished = true;
+              jobResult = returnedResult;
+              setProgress(100);
+              setStatus('completed');
+              setResult(returnedResult);
+            } else if (jobStatus === 'failed') {
+              isFinished = true;
+              throw new Error(jobError || 'Job execution failed in worker');
+            } else if (jobStatus === 'active') {
+              const scaledProgress = 30 + Math.floor((jobProgress || 0) * 0.65);
+              setProgress(Math.min(scaledProgress, 95));
+            } else if (jobStatus === 'waiting') {
+              setProgress(25);
+            }
           }
-
-          const { status: jobStatus, progress: jobProgress, result: returnedResult, error: jobError } = jobData.data;
-
-          if (jobStatus === 'completed') {
-            isFinished = true;
-            jobResult = returnedResult;
-            setProgress(100);
-            setStatus('completed');
-            setResult(returnedResult);
-          } else if (jobStatus === 'failed') {
-            isFinished = true;
-            throw new Error(jobError || 'Job execution failed in worker');
-          } else if (jobStatus === 'active') {
-            // Map 30-95% range for visual smoothness
-            const scaledProgress = 30 + Math.floor((jobProgress || 0) * 0.65);
-            setProgress(Math.min(scaledProgress, 95));
-          } else if (jobStatus === 'waiting') {
-            setProgress(25);
-          }
+        } else {
+          // Direct mode: result returned immediately
+          jobResult = uploadData.data as ConversionResult;
+          setProgress(100);
+          setStatus('completed');
+          setResult(jobResult);
         }
 
         // Save to history in localStorage
@@ -103,7 +106,7 @@ export function useConversion(category: ConversionCategory): UseConversionReturn
           try {
             const history = JSON.parse(localStorage.getItem('convertx-history') || '[]');
             history.unshift({
-              id: jobResult.id || jobId,
+              id: jobResult.id || 'unknown',
               toolSlug: options.action || 'convert',
               toolName: options.toolName || `${category.toUpperCase()} Tool`,
               inputFile: files[0]?.name || options.url || 'URL Download',

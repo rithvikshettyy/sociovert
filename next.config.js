@@ -4,6 +4,14 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['sharp'],
   },
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.ignoreWarnings = [
+        { module: /node_modules\/@upstash\/redis/ },
+      ];
+    }
+    return config;
+  },
   images: {
     remotePatterns: [
       {

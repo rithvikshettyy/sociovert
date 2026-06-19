@@ -43,6 +43,7 @@ export interface ConversionTool {
   action: ConversionAction;
   multiFile?: boolean;
   options?: ToolOption[];
+  requiresBinary?: boolean;
 }
 
 export interface ToolOption {

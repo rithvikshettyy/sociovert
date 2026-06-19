@@ -101,6 +101,7 @@ export const TOOLS: ConversionTool[] = [
     outputFormats: ['pdf'],
     icon: 'compress',
     action: 'compress',
+    requiresBinary: true,
     options: [
       {
         name: 'quality',
@@ -124,6 +125,7 @@ export const TOOLS: ConversionTool[] = [
     outputFormats: ['docx'],
     icon: 'convert',
     action: 'convert',
+    requiresBinary: true,
   },
   {
     slug: 'pdf-to-image',
@@ -134,6 +136,7 @@ export const TOOLS: ConversionTool[] = [
     outputFormats: ['jpg', 'png'],
     icon: 'convert',
     action: 'convert',
+    requiresBinary: true,
   },
   {
     slug: 'image-to-pdf',
@@ -155,6 +158,7 @@ export const TOOLS: ConversionTool[] = [
     outputFormats: ['pdf', 'txt'],
     icon: 'ocr',
     action: 'ocr',
+    requiresBinary: true,
   },
   {
     slug: 'rotate',
@@ -206,6 +210,7 @@ export const TOOLS: ConversionTool[] = [
     outputFormats: ['xlsx'],
     icon: 'convert',
     action: 'pdf-to-excel',
+    requiresBinary: true,
   },
   {
     slug: 'ppt-to-pdf',
@@ -216,6 +221,7 @@ export const TOOLS: ConversionTool[] = [
     outputFormats: ['pdf'],
     icon: 'convert',
     action: 'ppt-to-pdf',
+    requiresBinary: true,
   },
   {
     slug: 'protect',
@@ -305,6 +311,7 @@ export const TOOLS: ConversionTool[] = [
     outputFormats: ['jpg', 'png', 'webp', 'tiff', 'pdf', 'docx'],
     icon: 'watermark',
     action: 'exif-purge',
+    requiresBinary: true,
   },
   {
     slug: 'bg-removal',
@@ -315,6 +322,7 @@ export const TOOLS: ConversionTool[] = [
     outputFormats: ['png'],
     icon: 'watermark',
     action: 'bg-remove',
+    requiresBinary: true,
   },
   {
     slug: 'color-palette',
@@ -347,6 +355,7 @@ export const TOOLS: ConversionTool[] = [
     outputFormats: ['pdf'],
     icon: 'convert',
     action: 'convert',
+    requiresBinary: true,
   },
   {
     slug: 'from-pdf',
@@ -357,6 +366,7 @@ export const TOOLS: ConversionTool[] = [
     outputFormats: ['docx', 'xlsx', 'pptx'],
     icon: 'convert',
     action: 'convert',
+    requiresBinary: true,
   },
   {
     slug: 'to-latex',
@@ -367,6 +377,7 @@ export const TOOLS: ConversionTool[] = [
     outputFormats: ['tex'],
     icon: 'document',
     action: 'convert',
+    requiresBinary: true,
   },
   {
     slug: 'ocr-to-md',
@@ -377,6 +388,7 @@ export const TOOLS: ConversionTool[] = [
     outputFormats: ['md'],
     icon: 'ocr',
     action: 'ocr',
+    requiresBinary: true,
   },
   {
     slug: 'word-counter',
@@ -399,6 +411,7 @@ export const TOOLS: ConversionTool[] = [
     outputFormats: ['mp4', 'mov', 'avi', 'mkv', 'webm', 'gif'],
     icon: 'convert',
     action: 'convert',
+    requiresBinary: true,
   },
   {
     slug: 'compress',
@@ -409,6 +422,7 @@ export const TOOLS: ConversionTool[] = [
     outputFormats: ['mp4'],
     icon: 'compress',
     action: 'compress',
+    requiresBinary: true,
     options: [
       {
         name: 'quality',
@@ -430,6 +444,7 @@ export const TOOLS: ConversionTool[] = [
     outputFormats: ['mp3', 'wav', 'flac', 'aac', 'ogg'],
     icon: 'extract',
     action: 'extract',
+    requiresBinary: true,
   },
   {
     slug: 'social-download',
@@ -440,6 +455,7 @@ export const TOOLS: ConversionTool[] = [
     outputFormats: ['mp4', 'mp3'],
     icon: 'extract',
     action: 'download',
+    requiresBinary: true,
     options: [
       {
         name: 'format',
@@ -464,6 +480,7 @@ export const TOOLS: ConversionTool[] = [
     outputFormats: ['mp3', 'wav', 'flac', 'aac', 'ogg'],
     icon: 'convert',
     action: 'convert',
+    requiresBinary: true,
   },
 
   // ── Archive Tools ──
@@ -477,6 +494,7 @@ export const TOOLS: ConversionTool[] = [
     icon: 'archive',
     action: 'merge',
     multiFile: true,
+    requiresBinary: true,
   },
   {
     slug: 'extract',
@@ -487,6 +505,7 @@ export const TOOLS: ConversionTool[] = [
     outputFormats: ['zip'],
     icon: 'extract',
     action: 'extract',
+    requiresBinary: true,
   },
 
   // ── Utility Tools ──
@@ -582,6 +601,7 @@ export const TOOLS: ConversionTool[] = [
     outputFormats: ['mp4'],
     icon: 'extract',
     action: 'trim',
+    requiresBinary: true,
     options: [
       { name: 'start', label: 'Start Time (e.g. 00:00:05)', type: 'text', defaultValue: '00:00:00' },
       { name: 'end', label: 'End Time (e.g. 00:01:00)', type: 'text', defaultValue: '00:01:00' },
@@ -598,6 +618,7 @@ export const TOOLS: ConversionTool[] = [
     outputFormats: ['mp3'],
     icon: 'compress',
     action: 'compress',
+    requiresBinary: true,
     options: [
       {
         name: 'bitrate',
@@ -615,9 +636,16 @@ export const TOOLS: ConversionTool[] = [
   },
 ];
 
+// Filter out binary-dependent tools on serverless (Vercel)
+const isServerless = process.env.VERCEL === '1' || process.env.NEXT_PUBLIC_SERVERLESS === '1';
+
+export const AVAILABLE_TOOLS: ConversionTool[] = isServerless
+  ? TOOLS.filter((t) => !t.requiresBinary)
+  : TOOLS;
+
 // ─── Helpers ───
 export function getToolsByCategory(category: string): ConversionTool[] {
-  return TOOLS.filter((t) => t.category === category);
+  return AVAILABLE_TOOLS.filter((t) => t.category === category);
 }
 
 export function getTool(category: string, slug: string): ConversionTool | undefined {

@@ -9,7 +9,7 @@ import {
   VIDEO_FORMATS,
   AUDIO_FORMATS
 } from '@/lib/constants';
-import { conversionQueue } from '@/lib/queue';
+// Queue imported dynamically to avoid Bull/ioredis on Vercel
 import { validateTurnstileToken } from '@/lib/turnstile';
 
 export async function POST(req: NextRequest) {
@@ -62,6 +62,7 @@ export async function POST(req: NextRequest) {
     const inputPaths = savedFiles.map((f) => f.filePath);
 
     // Add job to the queue
+    const { conversionQueue } = await import('@/lib/queue');
     const job = await conversionQueue.add({
       category: 'archive',
       action,

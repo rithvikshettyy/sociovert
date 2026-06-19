@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import ToolCard from './ToolCard';
-import { TOOLS, CATEGORIES } from '@/lib/tools-registry';
+import { AVAILABLE_TOOLS, CATEGORIES } from '@/lib/tools-registry';
 
 interface ToolsListClientProps {
   initialCategory: string;
@@ -32,7 +32,7 @@ export default function ToolsListClient({ initialCategory }: ToolsListClientProp
   };
 
   const filteredTools = useMemo(() => {
-    return TOOLS.filter((tool) => {
+    return AVAILABLE_TOOLS.filter((tool) => {
       // 1. Filter by category
       const matchesCategory = activeCategory === 'all' || tool.category === activeCategory;
 
@@ -64,7 +64,7 @@ export default function ToolsListClient({ initialCategory }: ToolsListClientProp
               }
             `}
           >
-            All ({TOOLS.length})
+            All ({AVAILABLE_TOOLS.length})
           </button>
           {CATEGORIES.map((cat) => (
             <button

@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { TOOLS } from '@/lib/tools-registry';
+import { AVAILABLE_TOOLS } from '@/lib/tools-registry';
 import { getSiteUrl } from '@/lib/site-config';
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -17,7 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   // Dynamic tool detail routes
-  const toolRoutes = TOOLS.map((tool) => ({
+  const toolRoutes = AVAILABLE_TOOLS.map((tool) => ({
     url: `${baseUrl}/tools/${tool.category}/${tool.slug}`,
     lastModified: new Date().toISOString(),
     changeFrequency: 'monthly' as const,

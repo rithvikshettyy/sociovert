@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { TOOLS, CATEGORIES, getCategoryInfo } from '@/lib/tools-registry';
+import { AVAILABLE_TOOLS, CATEGORIES, getCategoryInfo } from '@/lib/tools-registry';
 import ToolsListClient from '@/components/conversion/ToolsListClient';
 
 interface ToolsPageProps {
@@ -18,7 +18,7 @@ export async function generateMetadata({ searchParams }: ToolsPageProps): Promis
 
   const description = categoryInfo
     ? `${categoryInfo.description}. Access professional, self-hosted, secure, and fast tools for ${categoryInfo.name.toLowerCase()} with zero logs.`
-    : `Access ${TOOLS.length} free, secure, and self-hosted file conversion tools. Compress, convert, merge, split, and edit files with complete privacy.`;
+    : `Access ${AVAILABLE_TOOLS.length} free, secure, and self-hosted file conversion tools. Compress, convert, merge, split, and edit files with complete privacy.`;
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://anyformat.in';
   const canonicalUrl = activeCategory
@@ -64,7 +64,7 @@ export default function ToolsPage({ searchParams }: ToolsPageProps) {
             All Conversion Tools
           </h1>
           <p className="text-text-secondary text-lg">
-            {TOOLS.length} tools across {CATEGORIES.length} categories
+            {AVAILABLE_TOOLS.length} tools across {CATEGORIES.length} categories
           </p>
         </div>
 

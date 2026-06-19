@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { saveUploadedFile } from '@/lib/file-utils';
 import { MAX_FILE_SIZE } from '@/lib/constants';
-import { conversionQueue } from '@/lib/queue';
 import { validateTurnstileToken } from '@/lib/turnstile';
+
+const isServerless = process.env.VERCEL === '1';
 
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
 
-    // Verify Turnstile Token
     const turnstileToken = formData.get('turnstileToken') as string;
     const isBotValid = await validateTurnstileToken(turnstileToken);
     if (!isBotValid) {
@@ -39,25 +39,25 @@ export async function POST(req: NextRequest) {
     const { filePath: inputPath } = await saveUploadedFile(file, ['docx', 'xlsx', 'pptx', 'doc', 'xls', 'ppt', 'odt', 'ods', 'odp', 'pdf', 'txt', 'csv', 'tex', 'latex', 'md', 'png', 'jpg', 'jpeg']);
     const ext = file.name.split('.').pop()?.toLowerCase() || 'txt';
 
-    // Add job to the queue
-    const job = await conversionQueue.add({
+    const jobData = {
       category: 'document',
       action,
       filePath: inputPath,
       outputFormat,
-      options: {
-        ext,
-      },
-    });
+      options: { ext },
+    };
 
-    return NextResponse.json({
-      success: true,
-      data: {
-        jobId: job.id,
-      },
-    });
+    if (isServerless) {
+      const { processConversion } = await import('@/lib/process-direct');
+      const result = await processConversion(jobData);
+      return NextResponse.json({ success: true, data: result });
+    }
+
+    const { conversionQueue } = await import('@/lib/queue');
+    const job = await conversionQueue.add(jobData);
+    return NextResponse.json({ success: true, data: { jobId: job.id } });
   } catch (error) {
-    console.error('Document queue enqueue error:', error);
+    console.error('Document conversion error:', error);
     return NextResponse.json(
       { success: false, error: error instanceof Error ? error.message : 'Processing failed' },
       { status: 500 }

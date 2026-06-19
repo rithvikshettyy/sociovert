@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { saveUploadedFile } from '@/lib/file-utils';
 import { MAX_FILE_SIZE } from '@/lib/constants';
-import { conversionQueue } from '@/lib/queue';
+// Queue imported dynamically to avoid Bull/ioredis on Vercel
 import { validateTurnstileToken } from '@/lib/turnstile';
 
 export async function POST(req: NextRequest) {
@@ -32,7 +32,8 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      const job = await conversionQueue.add({
+      const { conversionQueue } = await import('@/lib/queue');
+    const job = await conversionQueue.add({
         category: 'video',
         action,
         outputFormat: format,
@@ -69,6 +70,7 @@ export async function POST(req: NextRequest) {
     const { filePath: inputPath } = await saveUploadedFile(file, ['mp4', 'mov', 'avi', 'mkv', 'webm', 'gif']);
 
     // Add job to the queue
+    const { conversionQueue } = await import('@/lib/queue');
     const job = await conversionQueue.add({
       category: 'video',
       action,
