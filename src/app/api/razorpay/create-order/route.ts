@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         amount,
         currency: 'INR',
-        receipt: `enterprise_${session.user.email}_${Date.now()}`,
+        receipt: `ent_${Date.now()}`,
         notes: {
           email: session.user.email,
           plan: plan || 'enterprise',
