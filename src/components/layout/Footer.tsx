@@ -13,6 +13,7 @@ const toolCategories = [
 const quickLinks = [
   { href: '/tools', label: 'All Tools' },
   { href: '/pricing', label: 'Pricing' },
+  { href: '/contact', label: 'Contact' },
   { href: '/docs', label: 'Documentation' },
   { href: '/dashboard', label: 'Dashboard' },
 ];
