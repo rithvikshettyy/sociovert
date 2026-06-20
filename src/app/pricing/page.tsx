@@ -53,7 +53,7 @@ const plans = [
 ];
 
 export default function PricingPage() {
-  const { data: session } = useSession();
+  const { data: session, update: updateSession } = useSession();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const tier = (session?.user as { tier?: string } | undefined)?.tier || 'free';
@@ -105,6 +105,7 @@ export default function PricingPage() {
             const verifyData = await verifyRes.json();
 
             if (verifyData.success) {
+              await updateSession();
               window.location.href = '/dashboard';
             } else {
               setError('Payment verification failed. Contact support.');
