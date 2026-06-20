@@ -1,6 +1,6 @@
-# SocioVert 🚀
+# Anyformat
 
-SocioVert is a powerful, production-ready, open-source file conversion and media utility platform built on **Next.js 14 (App Router)**. It provides a clean, modern, and high-performance user interface for handling dozens of operations on PDFs, images, documents, videos, audio, and archives.
+Anyformat is a powerful, production-ready, open-source file conversion and media utility platform built on **Next.js 14 (App Router)**. It provides a clean, modern, and high-performance user interface for handling dozens of operations on PDFs, images, documents, videos, audio, and archives.
 
 Designed to run efficiently on self-hosted VPS instances, it leverages standard system utilities (like FFmpeg, LibreOffice, Tesseract OCR, Ghostscript, Pandoc, and ExifTool) to deliver desktop-grade file processing in a web interface.
 
@@ -42,7 +42,7 @@ Designed to run efficiently on self-hosted VPS instances, it leverages standard 
 
 ## 🛠️ Technology Stack
 
-SocioVert is built on a modern, robust, and highly responsive frontend/backend architecture:
+Anyformat is built on a modern, robust, and highly responsive frontend/backend architecture:
 
 *   **Framework:** Next.js 14 (App Router) & React 18
 *   **Language:** TypeScript
@@ -87,7 +87,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 🚀 VPS / Server Deployment
 
-SocioVert is designed to be hosted on a standard Ubuntu VPS. The repo contains a fully-automated bash installer.
+Anyformat is designed to be hosted on a standard Ubuntu VPS. The repo contains a fully-automated bash installer.
 
 ### 1. Automated VPS Setup
 To install all required packages, configure Node.js, install dependencies, build the application, and start the background processes, execute:
