@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import crypto from 'crypto';
 import { setUserTier } from '@/lib/user-store';
+import { sendPlanPurchaseEmail } from '@/lib/email';
 
 export async function POST(req: NextRequest) {
   try {
@@ -59,6 +60,14 @@ export async function POST(req: NextRequest) {
     };
 
     await setUserTier(session.user.email, 'enterprise', TTL[billingCycle]);
+
+    sendPlanPurchaseEmail({
+      to: session.user.email,
+      name: session.user.name || '',
+      billingCycle,
+      paymentId: razorpay_payment_id,
+      orderId: razorpay_order_id,
+    });
 
     return NextResponse.json({
       success: true,

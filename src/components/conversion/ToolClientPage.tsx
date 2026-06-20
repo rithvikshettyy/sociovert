@@ -215,20 +215,25 @@ export default function ToolClientPage() {
       }
 
       setShortenResult(data.data);
-      // Add to local storage history manually for custom tools
+      const entry = {
+        id: data.data.shortCode,
+        toolSlug: 'link-shortener',
+        toolName: 'Link Shortener',
+        inputFile: shortLongUrl,
+        outputFile: data.data.shortUrl,
+        inputSize: 0,
+        outputSize: 0,
+        status: 'completed' as const,
+        timestamp: Date.now(),
+      };
+      fetch('/api/history', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(entry),
+      }).catch(() => {});
       try {
         const history = JSON.parse(localStorage.getItem('convertx-history') || '[]');
-        history.unshift({
-          id: data.data.shortCode,
-          toolSlug: 'link-shortener',
-          toolName: 'Link Shortener',
-          inputFile: shortLongUrl,
-          outputFile: data.data.shortUrl,
-          inputSize: 0,
-          outputSize: 0,
-          status: 'completed',
-          timestamp: Date.now(),
-        });
+        history.unshift(entry);
         localStorage.setItem('convertx-history', JSON.stringify(history.slice(0, 50)));
       } catch {}
     } catch (err) {

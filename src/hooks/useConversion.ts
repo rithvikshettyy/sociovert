@@ -101,28 +101,28 @@ export function useConversion(category: ConversionCategory): UseConversionReturn
           setResult(jobResult);
         }
 
-        // Save to history in localStorage
         if (jobResult) {
+          const entry = {
+            id: jobResult.id || 'unknown',
+            toolSlug: options.action || 'convert',
+            toolName: options.toolName || `${category.toUpperCase()} Tool`,
+            inputFile: files[0]?.name || options.url || 'URL Download',
+            outputFile: jobResult.fileName || 'converted',
+            inputSize: files[0]?.size || 0,
+            outputSize: jobResult.fileSize || 0,
+            status: 'completed' as const,
+            timestamp: Date.now(),
+          };
+          fetch('/api/history', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(entry),
+          }).catch(() => {});
           try {
             const history = JSON.parse(localStorage.getItem('convertx-history') || '[]');
-            history.unshift({
-              id: jobResult.id || 'unknown',
-              toolSlug: options.action || 'convert',
-              toolName: options.toolName || `${category.toUpperCase()} Tool`,
-              inputFile: files[0]?.name || options.url || 'URL Download',
-              outputFile: jobResult.fileName || 'converted',
-              inputSize: files[0]?.size || 0,
-              outputSize: jobResult.fileSize || 0,
-              status: 'completed',
-              timestamp: Date.now(),
-            });
-            localStorage.setItem(
-              'convertx-history',
-              JSON.stringify(history.slice(0, 50))
-            );
-          } catch {
-            // localStorage might be unavailable
-          }
+            history.unshift(entry);
+            localStorage.setItem('convertx-history', JSON.stringify(history.slice(0, 50)));
+          } catch {}
         }
       } catch (err) {
         setStatus('error');
