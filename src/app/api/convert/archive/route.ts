@@ -9,8 +9,8 @@ import {
   VIDEO_FORMATS,
   AUDIO_FORMATS
 } from '@/lib/constants';
-// Queue imported dynamically to avoid Bull/ioredis on Vercel
 import { validateTurnstileToken } from '@/lib/turnstile';
+import { trackToolUsage } from '@/lib/usage-store';
 
 export async function POST(req: NextRequest) {
   try {
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
     const savedFiles = await Promise.all(files.map((f) => saveUploadedFile(f, allowedExts)));
     const inputPaths = savedFiles.map((f) => f.filePath);
 
-    // Add job to the queue
+    await trackToolUsage('archive', action);
     const { conversionQueue } = await import('@/lib/queue');
     const job = await conversionQueue.add({
       category: 'archive',

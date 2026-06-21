@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { generateQrCode, shortenLink, convertJsonCsv, convertBase64 } from '@/lib/converters/utility';
 import { stat } from 'fs/promises';
 import { validateTurnstileToken } from '@/lib/turnstile';
+import { trackToolUsage } from '@/lib/usage-store';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { getUserTier } from '@/lib/user-store';
@@ -29,6 +30,8 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    await trackToolUsage('utility', action);
 
     if (action === 'qr-generate') {
       const text = formData.get('text') as string;

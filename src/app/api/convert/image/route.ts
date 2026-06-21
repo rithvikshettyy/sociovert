@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { saveUploadedFile } from '@/lib/file-utils';
 import { MAX_FILE_SIZE } from '@/lib/constants';
 import { validateTurnstileToken } from '@/lib/turnstile';
+import { trackToolUsage } from '@/lib/usage-store';
 
 const isServerless = process.env.VERCEL === '1';
 
@@ -36,6 +37,8 @@ export async function POST(req: NextRequest) {
     const cropWidth = formData.get('cropWidth') as string;
     const cropHeight = formData.get('cropHeight') as string;
     const scale = formData.get('scale') as string;
+
+    await trackToolUsage('image', action);
 
     if (action === 'qr-generate') {
       const text = formData.get('text') as string;

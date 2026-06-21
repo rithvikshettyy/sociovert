@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { saveUploadedFile } from '@/lib/file-utils';
 import { MAX_FILE_SIZE } from '@/lib/constants';
-// Queue imported dynamically to avoid Bull/ioredis on Vercel
 import { validateTurnstileToken } from '@/lib/turnstile';
+import { trackToolUsage } from '@/lib/usage-store';
 
 export async function POST(req: NextRequest) {
   try {
@@ -38,6 +38,8 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    await trackToolUsage('video', action);
 
     if (action === 'download') {
       if (!url) {

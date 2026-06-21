@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { saveUploadedFile } from '@/lib/file-utils';
 import { MAX_FILE_SIZE } from '@/lib/constants';
 import { validateTurnstileToken } from '@/lib/turnstile';
+import { trackToolUsage } from '@/lib/usage-store';
 
 const isServerless = process.env.VERCEL === '1';
 
@@ -69,6 +70,8 @@ export async function POST(req: NextRequest) {
       outputFormat,
       options,
     };
+
+    await trackToolUsage('pdf', action);
 
     if (isServerless) {
       const { processConversion } = await import('@/lib/process-direct');

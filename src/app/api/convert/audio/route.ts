@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { saveUploadedFile } from '@/lib/file-utils';
 import { MAX_FILE_SIZE, AUDIO_FORMATS } from '@/lib/constants';
-// Queue imported dynamically to avoid Bull/ioredis on Vercel
 import { validateTurnstileToken } from '@/lib/turnstile';
+import { trackToolUsage } from '@/lib/usage-store';
 
 export async function POST(req: NextRequest) {
   try {
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
 
     const { filePath: inputPath } = await saveUploadedFile(file, [...AUDIO_FORMATS]);
 
-    // Add job to the queue
+    await trackToolUsage('audio', 'convert');
     const { conversionQueue } = await import('@/lib/queue');
     const job = await conversionQueue.add({
       category: 'audio',
