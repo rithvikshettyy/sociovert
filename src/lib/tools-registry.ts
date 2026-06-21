@@ -16,7 +16,7 @@ export const CATEGORIES: CategoryInfo[] = [
     description: 'Convert, compress, and resize images in any format',
     icon: 'image',
     color: '#3b82f6',
-    toolCount: 7,
+    toolCount: 9,
   },
   {
     slug: 'document',
@@ -32,7 +32,7 @@ export const CATEGORIES: CategoryInfo[] = [
     description: 'Convert, compress, and extract audio from videos',
     icon: 'video',
     color: '#f59e0b',
-    toolCount: 4,
+    toolCount: 5,
   },
   {
     slug: 'audio',
@@ -40,7 +40,7 @@ export const CATEGORIES: CategoryInfo[] = [
     description: 'Convert between audio formats with quality control',
     icon: 'audio',
     color: '#10b981',
-    toolCount: 1,
+    toolCount: 2,
   },
   {
     slug: 'archive',
@@ -56,7 +56,7 @@ export const CATEGORIES: CategoryInfo[] = [
     description: 'Web, productivity, and developer utilities',
     icon: 'utility',
     color: '#6366f1',
-    toolCount: 2,
+    toolCount: 4,
   },
 ];
 

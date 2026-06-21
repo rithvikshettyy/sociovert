@@ -79,7 +79,7 @@ export default function ToolsListClient({ initialCategory }: ToolsListClientProp
                 }
               `}
             >
-              {cat.name} ({cat.toolCount})
+              {cat.name} ({AVAILABLE_TOOLS.filter(t => t.category === cat.slug).length})
             </button>
           ))}
         </div>
